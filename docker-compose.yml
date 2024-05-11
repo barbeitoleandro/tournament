@@ -1,0 +1,42 @@
+version: '3.5'
+
+services:
+  laravel-app:
+    build:
+      context: '.'
+      args:
+        uid: ${UID}
+    container_name: app
+    environment:
+      - APACHE_RUN_USER=devuser
+      - APACHE_RUN_GROUP=devuser
+    volumes:
+      - .:/var/www/html
+    ports:
+      - 8000:80
+      - 8443:443
+    #   - 80:80
+    networks:
+      backend:
+        aliases:
+          - app
+
+  mysql-db:
+    image: mysql:8
+    container_name: db
+    volumes:
+      - ./run/var:/var/lib/mysql
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=securerootpassword
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=secret
+    networks:
+      backend:
+        aliases:
+          - db
+networks:
+  backend:
+    name: laravel-network
