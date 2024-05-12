@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('name');
             $table->date('date');
             $table->enum('gender', ['Male', 'Female']);
-            $table->integer('number_of_players');
             $table->timestamps();
         });
     }

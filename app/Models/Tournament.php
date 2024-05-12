@@ -13,7 +13,6 @@ class Tournament extends Model
         'name',
         'date',
         'gender',
-        'number_of_players',
     ];
 
     public function games()
