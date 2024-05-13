@@ -21,8 +21,6 @@ return new class extends Migration
             $table->integer('strength')->between(0, 100)->nullable();
             $table->integer('speed')->between(0, 100)->nullable();
             $table->integer('reaction_time')->between(0, 100)->nullable();
-            $table->integer('wins')->default(0);
-            $table->integer('losses')->default(0);
             $table->timestamps();
         });
     }

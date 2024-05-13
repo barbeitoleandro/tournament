@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateTournamentRequest extends FormRequest
+class CreateTournamentMaleRequest extends FormRequest
 {
 
     /**
@@ -31,7 +31,12 @@ class CreateTournamentRequest extends FormRequest
         return [
             'name' => 'required|string|max:50',
             'date' => 'required|date|date_format:Y-m-d',
-            'gender' => 'required|string|in:Female,Male',            
+            'players' => 'required|array',
+            'players.*.name' => 'required|string|max:50',
+            'players.*.gender' => 'required|string|in:Male',
+            'players.*.skill_level' => 'required|integer|between:1,100',
+            'players.*.strength' => 'required|integer|between:1,100',
+            'players.*.speed' => 'required|integer|between:1,100',
         ];
     }
 
