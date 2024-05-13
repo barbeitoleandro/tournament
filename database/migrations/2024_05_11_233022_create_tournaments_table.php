@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->date('date');
             $table->enum('gender', ['Male', 'Female']);
-            $table->integer('number_of_players');
+            $table->integer('rounds');
+            $table->foreignId('winner_id')->nullable()->constrained('players');
             $table->timestamps();
         });
     }
