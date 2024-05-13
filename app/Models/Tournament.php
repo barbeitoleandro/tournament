@@ -64,4 +64,53 @@ class Tournament extends Model
         
         return Player::find($game->winner_id) ?? null;
     }
+
+    public static function getTournament($tournamentId)
+    {
+        try{
+            $tournament = Tournament::find($tournamentId);
+            if(!$tournament){
+                return null;
+            }
+            return $tournament;
+        }
+        catch(\Exception $e){
+            Log::error($e->getMessage());
+            return null;
+        }
+    }
+
+    public static function searchTournament($search)
+    {
+        // dd($search);
+        try{
+            $query = Tournament::query();
+
+            if (!empty($search['name'])) {
+                $query->where('name', 'like', '%' . $search['name'] . '%');
+            }
+    
+            if (!empty($search['date'])) {
+                $query->where('date', 'like', '%' . $search['date'] . '%');
+            }
+    
+            if (!empty($search['gender'])) {
+                $query->where('gender', 'like', $search['gender']);
+            }
+    
+            if (!empty($search['winner_name'])) {
+                $query->whereHas('winner', function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', '%' . $search['winner_name'] . '%');
+                });
+            }
+    
+            $tournaments = $query->get();
+
+            return $tournaments;
+        }
+        catch(\Exception $e){
+            Log::error($e->getMessage());
+            return null;
+        }
+    }
 }

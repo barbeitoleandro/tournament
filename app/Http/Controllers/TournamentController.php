@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateTournamentFemaleRequest;
 use App\Http\Requests\CreateTournamentMaleRequest;
+use App\Http\Requests\SearchTournamentRequest;
+use App\Http\Resources\TournamentResource;
 use App\Models\Game;
 use App\Models\Player;
 use App\Models\Tournament;
@@ -40,8 +42,7 @@ class TournamentController extends Controller
 
             return response()->json([
                 'message' => 'Tournament played successfully',
-                'id' => $tournamentId,
-                'winner' => $winner
+                'tournament' => new TournamentResource(Tournament::find($tournamentId)),
             ], 201);
 
         }
@@ -118,6 +119,52 @@ class TournamentController extends Controller
         catch(\Exception $e){
             Log::error($e->getMessage());
             return null;
+        }
+    }
+
+    public function getTournament($tournamentId)
+    {
+        try{
+            $tournament = Tournament::getTournament($tournamentId);
+            if(!$tournament){
+                return response()->json([
+                    'message' => 'Tournament not found'
+                ], 404);
+            }
+
+            return response()->json(new TournamentResource($tournament), 200);
+        }
+        catch(\Exception $e){
+            Log::error($e->getMessage());
+            return response()->json([
+                'message' => 'Tournament not found'
+            ], 404);
+        }
+    }
+
+    public function searchTournament(SearchTournamentRequest $request)
+    {
+        // dd($request->only('name', 'date', 'winner_name'));
+        try{
+            $tournaments = Tournament::searchTournament([
+                'name' => $request->name ?? null,
+                'date' => $request->date ?? null,
+                'gender' => $request->gender ?? null,
+                'winner_name' => $request->winner_name ?? null
+            ]);
+            if($tournaments->isEmpty()){
+                return response()->json([
+                    'message' => 'Tournament not found'
+                ], 404);
+            }
+
+            return response()->json(TournamentResource::collection($tournaments), 200);
+        }
+        catch(\Exception $e){
+            Log::error($e->getMessage());
+            return response()->json([
+                'message' => 'Tournament not found'
+            ], 404);
         }
     }
             
